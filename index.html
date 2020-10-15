@@ -168,6 +168,23 @@
         const teamsParent = document.querySelector(
           "#teams"
         );
+
+        const li = document.querySelectorAll(
+          "#teams>.col>ul>li>.name"
+        );
+
+        [...li].forEach((el) => {
+          const color =
+            colors[
+              Math.floor(
+                Math.random() * colors.length
+              )
+            ];
+          document.querySelector(
+            "#unpicked"
+          ).innerHTML += `<span class="badge badge-${color} mr-1">${el.innerText}</span>`;
+        });
+
         [...teamsParent.children].forEach((el) =>
           el.remove()
         );
@@ -269,6 +286,12 @@
         [
           ...document.querySelector("#unpicked")
             .children,
+        ].forEach((el) => el.remove());
+
+        [
+          ...document.querySelectorAll(
+            "#teams>.col>ul>li"
+          ),
         ].forEach((el) => el.remove());
       }
     </script>
