@@ -28,6 +28,97 @@
     />
   </head>
   <body>
+    <div class="container">
+      <div class="jumbotron rounded-0 mb-0">
+        <div class="container">
+          <h1 class="display-4">
+            Strive Team Generator
+          </h1>
+          <p class="lead">
+            Nobody is gonna read this text so
+            there is no point in trying.
+          </p>
+        </div>
+      </div>
+
+      <div class="container bg-light pt-4">
+        <div class="form-group">
+          <label for="numTeams"
+            >Number of teams</label
+          >
+          <select
+            class="form-control"
+            id="numTeams"
+          >
+            <option>1</option>
+            <option selected>2</option>
+            <option>3</option>
+            <option>4</option>
+            <option>5</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="">New name</label>
+          <input
+            type="text"
+            class="form-control"
+            id="name"
+          />
+        </div>
+
+        <button
+          class="btn btn-success"
+          id="addName"
+        >
+          Add to the list
+        </button>
+        <button
+          class="btn btn-danger"
+          id="addName"
+          onclick="reset()"
+        >
+          Reset
+        </button>
+
+        <p class="p-0 mb-1 mt-3">Name List</p>
+        <div class="card">
+          <div class="card-body">
+            <div id="unpicked"></div>
+          </div>
+        </div>
+        <hr />
+        <div class="container pb-4">
+          <div class="row row-cols-4" id="teams">
+            <div class="col" data-id="0">
+              <button
+                class="btn btn-primary btn-block"
+                id="addToTeam"
+                data-id="0"
+                onclick="addToTeam()"
+              >
+                Team 1
+              </button>
+              <ul
+                class="list-group list-group-flush"
+              ></ul>
+            </div>
+            <div class="col" data-id="1">
+              <button
+                class="btn btn-primary btn-block"
+                id="addToTeam"
+                onclick="addToTeam()"
+              >
+                Team 2
+              </button>
+              <ul
+                class="list-group list-group-flush"
+              ></ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script
@@ -45,5 +136,141 @@
       integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
       crossorigin="anonymous"
     ></script>
+    <script>
+      const colors = [
+        "primary",
+        "secondary",
+        "success",
+        "danger",
+        "warning",
+        "info",
+        "light",
+        "dark",
+      ];
+
+      let names = [];
+
+      document
+        .querySelector("#addName")
+        .addEventListener("click", addName);
+
+      document
+        .querySelector("#numTeams")
+        .addEventListener(
+          "change",
+          changeTeamCount
+        );
+
+      function changeTeamCount() {
+        const teamNumber = document.querySelector(
+          "#numTeams"
+        ).value;
+        const teamsParent = document.querySelector(
+          "#teams"
+        );
+        [...teamsParent.children].forEach((el) =>
+          el.remove()
+        );
+
+        for (let i = 0; i < teamNumber; i++) {
+          const div = document.createElement(
+            "div"
+          );
+          div.classList.add("col");
+
+          div.dataset.id = i;
+
+          div.innerHTML = `
+            <button
+            class="btn btn-primary btn-block"
+            id="addToTeam"
+            onclick="addToTeam()"
+          >
+            Team ${i + 1}
+          </button>
+            <ul class="list-group list-group-flush"></ul>
+            `;
+          teamsParent.appendChild(div);
+        }
+        // list-group-item
+      }
+
+      function addName() {
+        const nameEl = document.querySelector(
+          "#name"
+        );
+
+        const color =
+          colors[
+            Math.floor(
+              Math.random() * colors.length
+            )
+          ];
+
+        if (!nameEl.value) return;
+
+        document.querySelector(
+          "#unpicked"
+        ).innerHTML += `<span class="badge badge-${color} mr-1">${nameEl.value}</span>`;
+
+        nameEl.value = "";
+      }
+
+      function addToTeam() {
+        const ul = event.target.parentElement.querySelector(
+          "ul"
+        );
+        const names = document.querySelectorAll(
+          "#unpicked>.badge"
+        );
+
+        const random = Math.floor(
+          Math.random() * names.length
+        );
+
+        const name = names[0];
+
+        if (!name) return;
+
+        const li = document.createElement("li");
+
+        li.innerHTML = `<span class="name">${name.innerText}</span> <button type="button" class="close" onclick="putBack()" >
+      <span >&times;</span>
+      </button>`;
+
+        li.classList.add("list-group-item");
+
+        ul.appendChild(li);
+
+        name.remove();
+      }
+
+      function putBack() {
+        const li =
+          event.target.parentElement
+            .parentElement;
+        const name = li.querySelector(".name")
+          .innerText;
+
+        const color =
+          colors[
+            Math.floor(
+              Math.random() * colors.length
+            )
+          ];
+
+        document.querySelector(
+          "#unpicked"
+        ).innerHTML += `<span class="badge badge-${color} mr-1">${name}</span>`;
+        li.remove();
+      }
+
+      function reset() {
+        [
+          ...document.querySelector("#unpicked")
+            .children,
+        ].forEach((el) => el.remove());
+      }
+    </script>
   </body>
 </html>
